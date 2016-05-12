@@ -1,15 +1,16 @@
 package com.roger.xxt.data.bean;
 
-import android.annotation.SuppressLint;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.roger.xxt.data.dao.InformationDao;
 
-@SuppressLint("ParcelCreator")
 @AVClassName("information")
-public class Information extends AVObject {
+public class Information extends AVObject implements Parcelable {
 
     private String tilte;
     private String content;
@@ -42,7 +43,7 @@ public class Information extends AVObject {
 
 
     public Information() {
-
+        super();
     }
 
     @Override
@@ -65,4 +66,14 @@ public class Information extends AVObject {
         result = 31 * result + (content != null ? content.hashCode() : 0);
         return result;
     }
+
+
+
+
+    protected Information(Parcel in) {
+        super(in);
+    }
+
+    public static final Parcelable.Creator<Information> CREATOR = AVObjectCreator.instance;
+
 }

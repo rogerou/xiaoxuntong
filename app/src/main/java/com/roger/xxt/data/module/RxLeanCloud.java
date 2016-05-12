@@ -8,7 +8,10 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
+import com.roger.xxt.data.bean.Comment;
 import com.roger.xxt.data.bean.Information;
+import com.roger.xxt.data.dao.CommentDao;
+import com.roger.xxt.data.dao.InformationDao;
 
 import java.util.List;
 
@@ -115,6 +118,7 @@ public class RxLeanCloud {
                 query.setLimit(size);
                 query.setSkip(size * page);
                 query.orderByDescending("createdAt");
+                query.include(InformationDao.AUTHOR);
                 query.findInBackground(new FindCallback<Information>() {
                     @Override
                     public void done(List<Information> list, AVException e) {
@@ -128,5 +132,52 @@ public class RxLeanCloud {
                 });
             }
         }).subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Comment> CommitComment(final Comment comment) {
+        return Observable.create(new Observable.OnSubscribe<Comment>() {
+            @Override
+            public void call(final Subscriber<? super Comment> subscriber) {
+                comment.setFetchWhenSave(true);
+                comment.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if (e == null) {
+                            subscriber.onNext(comment);
+                        } else {
+                            subscriber.onError(e);
+                        }
+                        subscriber.onCompleted();
+                    }
+                });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<Comment>> getAllComment(final Information information) {
+        return Observable.create(new Observable.OnSubscribe<List<Comment>>() {
+            @Override
+            public void call(final Subscriber<? super List<Comment>> subscriber) {
+                AVQuery<Comment> query = AVObject.getQuery(Comment.class);
+                query.orderByDescending("createdAt");
+                query.whereEqualTo(CommentDao.INFORMATION, information);
+                query.include(CommentDao.AUTHOR);
+                query.include(CommentDao.INFORMATION);
+                query.findInBackground(new FindCallback<Comment>() {
+                    @Override
+                    public void done(List<Comment> list, AVException e) {
+                        if (e == null) {
+                            subscriber.onNext(list);
+
+                        } else {
+                            subscriber.onError(e);
+                        }
+                        subscriber.onCompleted();
+                    }
+                });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
+
+
     }
 }

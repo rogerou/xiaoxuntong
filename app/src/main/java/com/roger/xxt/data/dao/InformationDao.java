@@ -9,4 +9,5 @@ public class InformationDao {
     public static final String TITLE = "title";
     public static final String CONTENT = "content";
     public static final String AUTHOR = "author";
+    public static final String TABLENAME = "information";
 }

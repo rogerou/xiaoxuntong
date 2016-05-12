@@ -8,4 +8,5 @@ public class CommentDao {
     public static final String AUTHOR = "author";
     public static final String COMMENT = "comment";
     public static final String INFORMATION = "infromation";
+    public static final String COMMENTUSERNAME = "commentusername";
 }

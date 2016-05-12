@@ -22,7 +22,9 @@ import com.roger.xxt.event.AddInformationEvent;
 import com.roger.xxt.uti.OnItemClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -82,12 +84,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         swipeLayout.setOnRefreshListener(this);
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                
-            }
-        });
     }
 
     @Override
@@ -107,6 +103,14 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             mAdapter = new xxtAdapter(mlist);
             ryXxt.setAdapter(mAdapter);
             isFirst = false;
+            mAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("info", mlist.get(position));
+                    startActivity(intent);
+                }
+            });
         }
         RxLeanCloud.getInstance().FetchALlInformation(size, page)
                 .doOnSubscribe(new Action0() {
